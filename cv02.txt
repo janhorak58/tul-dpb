@@ -1,0 +1,229 @@
+cast 1
+================================================================
+
+
+jan@lenovo:~$ docker run --name dpb-redis -p 6379:6379 -d redis
+Unable to find image 'redis:latest' locally
+latest: Pulling from library/redis
+e1caac4eb9d2: Pull complete 
+7469c6c5b625: Pull complete 
+a3d1b68c4a62: Pull complete 
+152cbe749752: Pull complete 
+7218480dfba1: Pull complete 
+e61c48a0d344: Pull complete 
+4f4fb700ef54: Pull complete 
+82adb0efabd8: Pull complete 
+Digest: sha256:e647cfe134bf5e8e74e620f66346f93418acfc240b71dd85640325cb7cd01402
+Status: Downloaded newer image for redis:latest
+3050d98bd64119a7f5d8be0f48b5e35d369051f073c885e8e1257fc104299c89
+jan@lenovo:~$ docker container exec -it dpb-redis bash
+root@3050d98bd641:/data# redis-cli\
+> ^C
+root@3050d98bd641:/data# ^C
+root@3050d98bd641:/data# redis-cli 
+127.0.0.1:6379> ping
+PONG
+127.0.0.1:6379> SET klic1 hodnota1
+OK
+127.0.0.1:6379> SET klic2 hodnota2
+OK
+127.0.0.1:6379> SET klic3 hodnota3
+OK
+127.0.0.1:6379> SET klic4 hodnota4
+OK
+127.0.0.1:6379> SET klic5 hodnota5
+OK
+127.0.0.1:6379> GET klic1
+"hodnota1"
+127.0.0.1:6379> SET klic1 nova_hodnota
+OK
+127.0.0.1:6379> DEL klic1
+(integer) 1
+127.0.0.1:6379> SET klic_expirace hodnota_expirace EX 60
+OK
+127.0.0.1:6379> TTL klic_expirace
+(integer) 50
+127.0.0.1:6379> TTL klic_expirace
+(integer) 42
+127.0.0.1:6379> TTL klic_expirace
+(integer) 22
+127.0.0.1:6379> GET klic_expirace
+"hodnota_expirace"
+127.0.0.1:6379> TTL klic_expirace
+(integer) -2
+127.0.0.1:6379> GET klic_expirace
+(nil)
+127.0.0.1:6379> 
+
+
+================================================================
+
+ukol  2
+
+127.0.0.1:6379> RPUSH todolist "Úkol 1"
+(integer) 1
+127.0.0.1:6379> RPUSH todolist "Úkol 2"
+(integer) 2
+127.0.0.1:6379> RPUSH todolist "Úkol 3"
+(integer) 3
+127.0.0.1:6379> LPUSH todolist "Nový úkol na začátek"
+(integer) 4
+127.0.0.1:6379> LRANGE todolist 0 -1
+1) "Nov\xc3\xbd \xc3\xbakol na za\xc4\x8d\xc3\xa1tek"
+2) "\xc3\x9akol 1"
+3) "\xc3\x9akol 2"
+4) "\xc3\x9akol 3"
+127.0.0.1:6379>  LLEN todolist
+(integer) 4
+127.0.0.1:6379> LINDEX todolist 1
+"\xc3\x9akol 1"
+127.0.0.1:6379> LREM todolist 1 "Úkol 2"
+(integer) 1
+127.0.0.1:6379> RPUSH finished "Úkol 2"
+(integer) 1
+127.0.0.1:6379> LRANGE todolist 0 -1
+1) "Nov\xc3\xbd \xc3\xbakol na za\xc4\x8d\xc3\xa1tek"
+2) "\xc3\x9akol 1"
+3) "\xc3\x9akol 3"
+127.0.0.1:6379> LRANGE finished 0 -1
+1) "\xc3\x9akol 2"
+127.0.0.1:6379> LSET todolist 0 "Novy ukol na zacatku"
+OK
+127.0.0.1:6379> LSET todolist 1 "ukol1"
+OK
+127.0.0.1:6379> LRANGE todolist 0 -1
+1) "Novy ukol na zacatku"
+2) "ukol1"
+3) "\xc3\x9akol 3"
+127.0.0.1:6379> LSET todolist 2 "ukol3"
+OK
+127.0.0.1:6379> LSET finished 0 "ukol2"
+OK
+127.0.0.1:6379> LRANGE todolist 0 -1
+1) "Novy ukol na zacatku"
+2) "ukol1"
+3) "ukol3"
+127.0.0.1:6379> LRANGE finished 0 -1
+1) "ukol2"
+
+
+====================================================================
+
+ukol 3
+
+
+
+127.0.0.1:6379> ZADD leaderboard 888 "Alfred"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 750 "Hrac1"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 650 "Hrac2"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 890 "Hrac3"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 120 "Hrac4"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 901 "Hrac4"
+(integer) 0
+127.0.0.1:6379> ZADD leaderboard 901 "Hrac5"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 1000 "Hrac6"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 9 "Hrac7"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 680 "Hrac8"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 3 "Hrac9"
+(integer) 1
+127.0.0.1:6379> ZADD leaderboard 889 "Hrac10"
+(integer) 1
+127.0.0.1:6379> ZREVRANGE leaderboard 0 2 WITHSCORES
+1) "Hrac6"
+2) "1000"
+3) "Hrac5"
+4) "901"
+5) "Hrac4"
+6) "901"
+127.0.0.1:6379> ZRANGE leaderboard 0 0 WITHSCORES
+1) "Hrac9"
+2) "3"
+127.0.0.1:6379> ZCOUNT leaderboard -inf 99
+(integer) 2
+127.0.0.1:6379> ZRANGEBYSCORE leaderboard 851 +inf
+1) "Alfred"
+2) "Hrac10"
+3) "Hrac3"
+4) "Hrac4"
+5) "Hrac5"
+6) "Hrac6"
+127.0.0.1:6379> ZREVRANGE leaderboard 0 10 WITHSCORES
+ 1) "Hrac6"
+ 2) "1000"
+ 3) "Hrac5"
+ 4) "901"
+ 5) "Hrac4"
+ 6) "901"
+ 7) "Hrac3"
+ 8) "890"
+ 9) "Hrac10"
+10) "889"
+11) "Alfred"
+12) "888"
+13) "Hrac1"
+14) "750"
+15) "Hrac8"
+16) "680"
+17) "Hrac2"
+18) "650"
+19) "Hrac7"
+20) "9"
+21) "Hrac9"
+22) "3"
+127.0.0.1:6379> ZRANK leaderboard "Alfred"
+(integer) 5
+127.0.0.1:6379> ZINCRBY leaderboard 12 "Alfred"
+"900"
+127.0.0.1:6379> ZRANK leaderboard "Alfred"
+(integer) 7
+127.0.0.1:6379> ZREVRANGE leaderboard 0 10 WITHSCORES
+ 1) "Hrac6"
+ 2) "1000"
+ 3) "Hrac5"
+ 4) "901"
+ 5) "Hrac4"
+ 6) "901"
+ 7) "Alfred"
+ 8) "900"
+ 9) "Hrac3"
+10) "890"
+11) "Hrac10"
+12) "889"
+13) "Hrac1"
+14) "750"
+15) "Hrac8"
+16) "680"
+17) "Hrac2"
+18) "650"
+19) "Hrac7"
+20) "9"
+21) "Hrac9"
+22) "3"
+127.0.0.1:6379> ZREVRANGE leaderboard 0 10
+ 1) "Hrac6"
+ 2) "Hrac5"
+ 3) "Hrac4"
+ 4) "Alfred"
+ 5) "Hrac3"
+ 6) "Hrac10"
+ 7) "Hrac1"
+ 8) "Hrac8"
+ 9) "Hrac2"
+10) "Hrac7"
+11) "Hrac9"
+127.0.0.1:6379> ZRANK leaderboard "Alfred"
+(integer) 7
+
+
+===============================================================
+
+ukol 4
